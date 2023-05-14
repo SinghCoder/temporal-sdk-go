@@ -551,6 +551,7 @@ func ExecuteActivity(ctx Context, activity interface{}, args ...interface{}) Fut
 }
 
 func (wc *workflowEnvironmentInterceptor) ExecuteActivity(ctx Context, typeName string, args ...interface{}) Future {
+	wc.GetLogger(ctx).Info("inside temporal-go-sdk ExecuteActivity")
 	// Validate type and its arguments.
 	dataConverter := getDataConverterFromWorkflowContext(ctx)
 	registry := getRegistryFromWorkflowContext(ctx)
@@ -582,6 +583,7 @@ func (wc *workflowEnvironmentInterceptor) ExecuteActivity(ctx Context, typeName 
 
 	// Retrieve headers from context to pass them on
 	envOptions := getWorkflowEnvOptions(ctx)
+	wc.GetLogger(ctx).Info("about to call workflow-header-propagated")
 	header, err := workflowHeaderPropagated(ctx, envOptions.ContextPropagators)
 	if err != nil {
 		settable.Set(nil, err)
