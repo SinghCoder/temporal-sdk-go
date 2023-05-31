@@ -59,6 +59,7 @@ func NewCompositeDataConverter(payloadConverters ...PayloadConverter) DataConver
 
 // ToPayloads converts a list of values.
 func (dc *CompositeDataConverter) ToPayloads(values ...interface{}) (*commonpb.Payloads, error) {
+	log.Printf("ToPayloads: %v\n", values)
 	if len(values) == 0 {
 		return nil, nil
 	}
