@@ -25,7 +25,6 @@ package internal
 import (
 	"context"
 	"fmt"
-	"log"
 
 	commonpb "go.temporal.io/api/common/v1"
 )
@@ -121,7 +120,6 @@ func workflowContextWithHeaderPropagated(
 }
 
 func workflowHeaderPropagated(ctx Context, ctxProps []ContextPropagator) (*commonpb.Header, error) {
-	log.Printf("inside workflowHeaderPropagated with ctxProps: %v", ctxProps)
 	header := &commonpb.Header{Fields: WorkflowHeader(ctx)}
 	if header.Fields == nil {
 		return nil, fmt.Errorf("context missing workflow header")

@@ -77,6 +77,19 @@ func (dc *CompositeDataConverter) ToPayloads(values ...interface{}) (*commonpb.P
 	return result, nil
 }
 
+func printPayload(payload *commonpb.Payload) {
+	if payload == nil {
+		log.Printf("payload is nil\n")
+		return
+	}
+	log.Printf("printing metadata\n")
+	for k, v := range payload.Metadata {
+		log.Printf("key: %s, value: %s\n", k, string(v))
+	}
+	log.Printf("printing data\n")
+	log.Printf("data: %s\n", string(payload.Data))
+}
+
 // FromPayloads converts to a list of values of different types.
 func (dc *CompositeDataConverter) FromPayloads(payloads *commonpb.Payloads, valuePtrs ...interface{}) error {
 	if payloads == nil {
@@ -85,7 +98,8 @@ func (dc *CompositeDataConverter) FromPayloads(payloads *commonpb.Payloads, valu
 	log.Printf("inside FromPayloads\n")
 
 	for i, payload := range payloads.GetPayloads() {
-		log.Printf("FromPayloads[%d]: %v\n", i, payload.String())
+		log.Printf("FromPayloads[%d]:\n", i)
+		printPayload(payload)
 		if i >= len(valuePtrs) {
 			break
 		}
@@ -102,6 +116,7 @@ func (dc *CompositeDataConverter) FromPayloads(payloads *commonpb.Payloads, valu
 
 // ToPayload converts single value to payload.
 func (dc *CompositeDataConverter) ToPayload(value interface{}) (*commonpb.Payload, error) {
+	log.Printf("to payload called on value: %v\n", value)
 	for _, enc := range dc.orderedEncodings {
 		payloadConverter := dc.payloadConverters[enc]
 		payload, err := payloadConverter.ToPayload(value)
@@ -122,7 +137,8 @@ func (dc *CompositeDataConverter) FromPayload(payload *commonpb.Payload, valuePt
 		return nil
 	}
 
-	log.Printf("about to do encoding of payload %v\n", payload.String())
+	log.Printf("about to do encoding of payload\n")
+	printPayload(payload)
 	enc, err := encoding(payload)
 	if err != nil {
 		log.Printf("encoding error: %v\n", err)
