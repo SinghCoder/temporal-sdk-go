@@ -26,6 +26,7 @@ package converter
 
 import (
 	"fmt"
+	"log"
 
 	commonpb "go.temporal.io/api/common/v1"
 )
@@ -80,12 +81,15 @@ func (dc *CompositeDataConverter) FromPayloads(payloads *commonpb.Payloads, valu
 	if payloads == nil {
 		return nil
 	}
+	log.Printf("FromPayloads: %v\n", payloads)
 
 	for i, payload := range payloads.GetPayloads() {
+		log.Printf("FromPayloads[%d]: %v\n", i, payload)
 		if i >= len(valuePtrs) {
 			break
 		}
 
+		log.Printf("calling dc.FromPayload\n")
 		err := dc.FromPayload(payload, valuePtrs[i])
 		if err != nil {
 			return fmt.Errorf("payload item %d: %w", i, err)
@@ -117,15 +121,20 @@ func (dc *CompositeDataConverter) FromPayload(payload *commonpb.Payload, valuePt
 		return nil
 	}
 
+	log.Printf("about to do encoding of payload %v\n", payload)
 	enc, err := encoding(payload)
 	if err != nil {
+		log.Printf("encoding error: %v\n", err)
 		return err
 	}
+	log.Printf("encoding: %v\n", enc)
 
 	payloadConverter, ok := dc.payloadConverters[enc]
 	if !ok {
+		log.Printf("encoding %s: %v\n", enc, ErrEncodingIsNotSupported)
 		return fmt.Errorf("encoding %s: %w", enc, ErrEncodingIsNotSupported)
 	}
+	log.Printf("payloadConverter: %v\n", payloadConverter)
 
 	return payloadConverter.FromPayload(payload, valuePtr)
 }

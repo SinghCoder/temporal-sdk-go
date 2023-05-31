@@ -27,6 +27,7 @@ package converter
 import (
 	"encoding/base64"
 	"fmt"
+	"log"
 	"reflect"
 
 	gogoproto "github.com/gogo/protobuf/proto"
@@ -46,7 +47,7 @@ type ProtoPayloadConverterOptions struct {
 	ExcludeProtobufMessageTypes bool
 }
 
-// NewProtoPayloadConverter creates new instance of `ProtoPayloadConverter``.
+// NewProtoPayloadConverter creates new instance of `ProtoPayloadConverter“.
 func NewProtoPayloadConverter() *ProtoPayloadConverter {
 	return &ProtoPayloadConverter{}
 }
@@ -70,9 +71,11 @@ func (c *ProtoPayloadConverter) ToPayload(value interface{}) (*commonpb.Payload,
 	// Case 4 implements gogoproto.Message.
 	// It is important to check for proto.Message first because cases 2 and 3 also implements gogoproto.Message.
 
+	log.Printf("inside protoPayloadConverter.ToPayload with value: %v", value)
 	builtPointer := false
 	for {
 		if valueProto, ok := value.(proto.Message); ok {
+			log.Printf("value is proto.Message: %v\n", valueProto)
 			byteSlice, err := proto.Marshal(valueProto)
 			if err != nil {
 				return nil, fmt.Errorf("%w: %v", ErrUnableToEncode, err)
