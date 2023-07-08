@@ -127,6 +127,8 @@ func (dc *CompositeDataConverter) FromPayload(payload *commonpb.Payload, valuePt
 		return fmt.Errorf("encoding %s: %w", enc, ErrEncodingIsNotSupported)
 	}
 
+	fmt.Printf("inside fromPayload, encoding = %s, payloadConverter = %T for inputPayload = %#v\n", enc, payloadConverter, payload)
+
 	return payloadConverter.FromPayload(payload, valuePtr)
 }
 
