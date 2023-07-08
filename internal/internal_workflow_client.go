@@ -1472,13 +1472,16 @@ func (w *workflowClientInterceptor) ExecuteWorkflow(
 	dataConverter := WithContext(ctx, w.client.dataConverter)
 	if dataConverter == nil {
 		dataConverter = converter.GetDefaultDataConverter()
+		fmt.Printf("picking up default data converter.")
 	}
 
+	fmt.Printf("calling encodeArgs")
 	// Encode input
 	input, err := encodeArgs(dataConverter, in.Args)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("after encodeArgs, input: %v", input.String())
 
 	memo, err := getWorkflowMemo(in.Options.Memo, dataConverter)
 	if err != nil {
