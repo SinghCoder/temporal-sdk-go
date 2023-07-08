@@ -100,7 +100,7 @@ type (
 	}
 )
 
-var enableVerboseLogging = false
+var enableVerboseLogging = true
 
 // EnableVerboseLogging enable or disable verbose logging. This is for internal use only.
 func EnableVerboseLogging(enable bool) {

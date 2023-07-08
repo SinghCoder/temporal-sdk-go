@@ -100,6 +100,8 @@ func (dc *CompositeDataConverter) ToPayload(value interface{}) (*commonpb.Payloa
 	for _, enc := range dc.orderedEncodings {
 		payloadConverter := dc.payloadConverters[enc]
 		payload, err := payloadConverter.ToPayload(value)
+		fmt.Printf("inside ToPayload, encoding = %s, payloadConverter = %T for input = %v\n", enc, payloadConverter, value)
+		fmt.Printf("payload, err outputs are %v, %v\n", payload, err)
 		if err != nil {
 			return nil, err
 		}
@@ -127,7 +129,7 @@ func (dc *CompositeDataConverter) FromPayload(payload *commonpb.Payload, valuePt
 		return fmt.Errorf("encoding %s: %w", enc, ErrEncodingIsNotSupported)
 	}
 
-	fmt.Printf("inside fromPayload, encoding = %s, payloadConverter = %T for inputPayload = %#v\n", enc, payloadConverter, payload)
+	fmt.Printf("inside fromPayload, encoding = %s, payloadConverter = %T for inputPayload = %s\n", enc, payloadConverter, payload.String())
 
 	return payloadConverter.FromPayload(payload, valuePtr)
 }
